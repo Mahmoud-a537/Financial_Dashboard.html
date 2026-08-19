@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أداة التحليل المالي التفاعلية</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --bg: #f3f4f6;
+            --surface: #ffffff;
+            --text: #1f2937;
+            --border: #e5e7eb;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 { color: var(--primary); }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .card {
+            background-color: var(--surface);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+        .card h2 {
+            margin-top: 0;
+            color: var(--secondary);
+            border-bottom: 2px solid var(--bg);
+            padding-bottom: 10px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        input {
+            width: 120px;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+        .result-group {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border);
+            font-weight: bold;
+        }
+        .result-value { color: var(--primary); }
+        .highlight {
+            background-color: #dbeafe;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>أداة التحليل المالي التفاعلية (Financial Ratios)</h1>
+        <p>أدخل القيم المرجعية ليتم حساب نسب السيولة، الملاءة، والربحية (DuPont) تلقائياً.</p>
+    </header>
+
+    <div class="grid">
+        <!-- Input Section -->
+        <div class="card">
+            <h2>مدخلات القوائم المالية (Inputs)</h2>
+            <div class="input-group">
+                <label>الأصول المتداولة (Current Assets)</label>
+                <input type="number" id="ca" value="2000" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label>الالتزامات المتداولة (Current Liabilities)</label>
+                <input type="number" id="cl" value="1000" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label>المخزون (Inventory)</label>
+                <input type="number" id="inv" value="200" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label>النقدية (Cash)</label>
+                <input type="number" id="cash" value="500" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label>إجمالي الأصول (Total Assets)</label>
+                <input type="number" id="ta" value="3000" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label>إجمالي حقوق الملكية (Total Equity)</label>
+                <input type="number" id="te" value="2000" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label>إجمالي الإيرادات (Sales Revenue)</label>
+                <input type="number" id="rev" value="10000" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label>صافي الربح (Net Profit)</label>
+                <input type="number" id="np" value="2000" oninput="calculate()">
+            </div>
+        </div>
+
+        <!-- Output Section -->
+        <div class="card">
+            <h2>المؤشرات والنسب (Outputs)</h2>
+            
+            <h3>1. السيولة (Liquidity)</h3>
+            <div class="result-group">
+                <span>نسبة التداول (Current Ratio):</span>
+                <span id="res-cr" class="result-value">0.00</span>
+            </div>
+            <div class="result-group">
+                <span>النسبة السريعة (Quick Ratio):</span>
+                <span id="res-qr" class="result-value">0.00</span>
+            </div>
+            <div class="result-group">
+                <span>نسبة النقدية (Cash Ratio):</span>
+                <span id="res-cashr" class="result-value">0.00</span>
+            </div>
+
+            <h3>2. الرافعة المالية (Leverage)</h3>
+            <div class="result-group">
+                <span>مضاعف الرافعة (Financial Leverage):</span>
+                <span id="res-flm" class="result-value">0.00</span>
+            </div>
+
+            <h3>3. تحليل دي بونت (DuPont Analysis)</h3>
+            <div class="result-group">
+                <span>هامش الربح (NPM):</span>
+                <span id="res-npm" class="result-value">0.00%</span>
+            </div>
+            <div class="result-group">
+                <span>معدل دوران الأصول (Asset Turnover):</span>
+                <span id="res-ato" class="result-value">0.00</span>
+            </div>
+            <div class="highlight result-group">
+                <span>العائد على حقوق الملكية (ROE):</span>
+                <span id="res-roe" class="result-value">0.00%</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculate() {
+        // Fetch inputs
+        const ca = parseFloat(document.getElementById('ca').value) || 0;
+        const cl = parseFloat(document.getElementById('cl').value) || 0;
+        const inv = parseFloat(document.getElementById('inv').value) || 0;
+        const cash = parseFloat(document.getElementById('cash').value) || 0;
+        const ta = parseFloat(document.getElementById('ta').value) || 0;
+        const te = parseFloat(document.getElementById('te').value) || 0;
+        const rev = parseFloat(document.getElementById('rev').value) || 0;
+        const np = parseFloat(document.getElementById('np').value) || 0;
+
+        // Calculate Liquidity
+        const currentRatio = cl !== 0 ? (ca / cl) : 0;
+        const quickRatio = cl !== 0 ? ((ca - inv) / cl) : 0;
+        const cashRatio = cl !== 0 ? (cash / cl) : 0;
+
+        // Calculate Leverage
+        const leverageMultiplier = te !== 0 ? (ta / te) : 0;
+
+        // Calculate DuPont
+        const npm = rev !== 0 ? (np / rev) : 0;
+        const assetTurnover = ta !== 0 ? (rev / ta) : 0;
+        const roe = npm * assetTurnover * leverageMultiplier; // or just (np / te)
+
+        // Update DOM
+        document.getElementById('res-cr').innerText = currentRatio.toFixed(2) + 'x';
+        document.getElementById('res-qr').innerText = quickRatio.toFixed(2) + 'x';
+        document.getElementById('res-cashr').innerText = cashRatio.toFixed(2) + 'x';
+        
+        document.getElementById('res-flm').innerText = leverageMultiplier.toFixed(2) + 'x';
+
+        document.getElementById('res-npm').innerText = (npm * 100).toFixed(2) + '%';
+        document.getElementById('res-ato').innerText = assetTurnover.toFixed(2) + 'x';
+        document.getElementById('res-roe').innerText = (roe * 100).toFixed(2) + '%';
+    }
+
+    // Run once on load
+    calculate();
+</script>
+
+</body>
+</html>
